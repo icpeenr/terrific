@@ -1,0 +1,2 @@
+#define terrific_VERSION_MAJOR @terrific_VERSION_MAJOR@
+#define terrific_VERSION_MINOR @terrific_VERSION_MINOR@

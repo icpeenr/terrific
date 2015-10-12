@@ -386,14 +386,20 @@ int main() {
 
     //window->setPosition(sf::Vector2i(1100, 100)); 
     //GameState->Font.loadFromFile("../data/fonts/Retro Computer_DEMO.ttf");
-  
+#if 0
     sf::Font font;
     if (!font.loadFromFile("../data/font/LiberationSans-Regular.ttf")) {
       cerr << "error: failed to load LiberationSans-Regular.ttf" << endl;
       return 1;
     }
+#else
+    sf::Font font;
+    if (!font.loadFromFile("../data/fonts/Retro Computer_DEMO.ttf")) {
+      cerr << "error: failed to load Retro Computer_DEMO.ttf" << endl;
+      return 1;
+    }
+#endif
 
-    
     sfguiDesktop.GetEngine().GetResourceManager().AddFont( "custom_font", std::make_shared<sf::Font>(font));    
     //desktop.SetProperty( "*", "FontName",  "custom_font" );
     sfguiDesktop.SetProperties(

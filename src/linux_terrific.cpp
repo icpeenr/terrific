@@ -82,6 +82,77 @@ std::string get_file_contents(const char *filename)
   throw(errno);
 }
 
+inline uint32
+RoundReal32ToUInt32(real32 Real32)
+{
+  uint32 Result = (uint32)roundf(Real32);
+  return(Result);
+}
+
+void
+CreateGameInventory(std::shared_ptr<sfg::Window> Window, real32 Width, real32 Height)
+{
+
+
+    //real32 Width  = Window->GetAllocation().left;
+    //real32 Height = Window->GetAllocation().top;
+  real32 SlotSize = 42;
+
+  auto InventorySize = sf::Vector2f(Width*0.3f, Height*0.3f);
+  uint32 SlotsX = RoundReal32ToUInt32(InventorySize.x / SlotSize);
+  uint32 SlotsY = RoundReal32ToUInt32(InventorySize.y / SlotSize);
+
+  Window->RemoveAll();
+  Window->SetPosition( sf::Vector2f(Width*0.015f, Height*0.015f) );
+  Window->SetRequisition( InventorySize );
+  Window->SetId("inventory");
+
+  auto Label = sfg::Label::Create();
+  Label->SetText("Inventory!");
+    //Box->Pack(Label);
+
+  auto Boxes = sfg::Box::Create(sfg::Box::Orientation::VERTICAL, 5.f);
+  Window->Add(Boxes);
+
+
+
+  char CharBuffer[256];
+
+  for(uint32 Row = 0;
+    Row <= SlotsY-1;
+    Row++)
+  {
+    auto Box = sfg::Box::Create( sfg::Box::Orientation::HORIZONTAL, 5.f );
+    Boxes->Pack(Box);
+    for(uint32 Column = 0;
+      Column <= SlotsX-1;
+      Column++)
+    {
+      sprintf(CharBuffer, "Item %d", Row+Column);
+      auto Slot = sfg::Button::Create();
+            //Slot->SetLabel(CharBuffer);
+      Slot->SetState(sfg::Widget::State::INSENSITIVE);
+      Slot->SetRequisition(sf::Vector2f(SlotSize, SlotSize));
+      Box->Pack(Slot);
+    }
+  }
+}
+
+void
+CreateGameUI(sfg::Desktop &Desktop, real32 Width, real32 Height)
+{
+  auto Window = sfg::Window::Create( sfg::Window::Style::TITLEBAR | sfg::Window::Style::BACKGROUND | sfg::Window::Style::RESIZE | sfg::Window::Style::CLOSE);
+  Window->SetTitle("Inventory");
+
+  Desktop.Add(Window);
+  CreateGameInventory(Window, Width, Height);
+    //CreateMainMenu(Desktop, Width, Height);
+
+    //Window->GetSignal(sfg::Widget::OnSizeAllocate).Connect(std::bind(&CreateGameInventory, Window->GetId(), 800, 600));
+
+
+}
+
 int main() {
   std::srand(std::time(nullptr));
 
@@ -170,7 +241,7 @@ int main() {
 cout << "Version " << terrific_VERSION_MINOR << "." << terrific_VERSION_MAJOR << endl;
 
     //b2World B2World(b2Vec2(0.0f, -9.8f));
-
+//CreateGameUI(sfguiDesktop, mode.width, mode.height);
 Game game(window, font);
 
   // Create our main SFGUI window

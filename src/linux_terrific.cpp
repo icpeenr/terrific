@@ -413,6 +413,10 @@ int main() {
 
   sfguiDesktop.GetEngine().GetResourceManager().AddFont( "custom_font", std::make_shared<sf::Font>(font));    
     //desktop.SetProperty( "*", "FontName",  "custom_font" );
+#if 0
+
+  sfguiDesktop.SetProperties();
+#else
   sfguiDesktop.SetProperties(
     "* {"
     "   FontName: custom_font;"
@@ -431,7 +435,7 @@ int main() {
     "   BackgroundColor: #202020fa;"
     "}"
     );
-
+#endif
   cout << "Version " << terrific_VERSION_MINOR << "." << terrific_VERSION_MAJOR << endl;
 
     //b2World B2World(b2Vec2(0.0f, -9.8f));

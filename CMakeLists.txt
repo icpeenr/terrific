@@ -16,17 +16,18 @@ endif()
 # Set version information in a config.h file
 set(terrific_VERSION_MAJOR 1)
 set(terrific_VERSION_MINOR 0)
+set(PROJECT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
 configure_file(
 "${PROJECT_SOURCE_DIR}/config.h.in"
 "${PROJECT_BINARY_DIR}/config.h"
 )
 include_directories("${PROJECT_BINARY_DIR}")
 
-file(WRITE "../build/lock.tmp" "lock")
+file(WRITE "build/lock.tmp" "lock")
 # Define sources and executable
 set(EXECUTABLE_NAME "terrific")
 #set(TERRIFIC_GAME "terrific_game")
-add_executable(${EXECUTABLE_NAME} linux_terrific.cpp)
+add_executable(${EXECUTABLE_NAME} ${PROJECT_SOURCE_DIR}/linux_terrific.cpp)
 #add_library(${TERRIFIC_GAME} SHARED terrific_game.cpp)
 
 # Detect and add SFML
@@ -93,9 +94,9 @@ endif()
 
 # CPack packaging
 include(InstallRequiredSystemLibraries)
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/../LICENSE")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
 set(CPACK_PACKAGE_VERSION_MAJOR "${terrific_VERSION_MAJOR}")
 set(CPACK_PACKAGE_VERSION_MINOR "${terrific_VERSION_MINOR}")
 include(CPack)
 
-file(REMOVE "../build/lock.tmp")
+file(REMOVE "build/lock.tmp")

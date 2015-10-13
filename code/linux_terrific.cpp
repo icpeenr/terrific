@@ -1,6 +1,6 @@
 #include "common.h"
 #include "config.h"
-#include "linux_terror.h"
+#include "linux_terrific.h"
 
 float r(int a, float b = 0) {
   return static_cast<float>(std::rand() % (a * 1000) + b * 1000) / 1000.0;
@@ -9,7 +9,7 @@ float r(int a, float b = 0) {
 
 struct Body {
   Body(const sf::Vector2f &position, const sf::Vector2f &direction, float rotationd = 0.0)
-    : position(position), direction(direction), rotationd(rotationd) {}
+  : position(position), direction(direction), rotationd(rotationd) {}
 
   sf::Vector2f position;
   sf::Vector2f direction;
@@ -26,7 +26,7 @@ struct Renderable {
 
 struct Particle {
   explicit Particle(sf::Color colour, float radius, float duration)
-      : colour(colour), radius(radius), alpha(colour.a), d(colour.a / duration) {}
+  : colour(colour), radius(radius), alpha(colour.a), d(colour.a / duration) {}
 
   sf::Color colour;
   float radius, alpha, d;
@@ -101,10 +101,10 @@ public:
   void update(ex::EntityManager &es, ex::EventManager &events, ex::TimeDelta dt) override {
     es.each<Body>([this](ex::Entity entity, Body &body) {
       if (body.position.x + body.direction.x < 0 ||
-          body.position.x + body.direction.x >= size.x)
+        body.position.x + body.direction.x >= size.x)
         body.direction.x = -body.direction.x;
       if (body.position.y + body.direction.y < 0 ||
-          body.position.y + body.direction.y >= size.y)
+        body.position.y + body.direction.y >= size.y)
         body.direction.y = -body.direction.y;
     });
   }
@@ -153,21 +153,21 @@ private:
   void collect(ex::EntityManager &entities) {
     entities.each<Body, Collideable>([this](ex::Entity entity, Body &body, Collideable &collideable) {
       unsigned int
-          left = static_cast<int>(body.position.x - collideable.radius) / PARTITIONS,
-          top = static_cast<int>(body.position.y - collideable.radius) / PARTITIONS,
-          right = static_cast<int>(body.position.x + collideable.radius) / PARTITIONS,
-          bottom = static_cast<int>(body.position.y + collideable.radius) / PARTITIONS;
-        Candidate candidate {body.position, collideable.radius, entity};
-        unsigned int slots[4] = {
-          left + top * size.x,
-          right + top * size.x,
-          left  + bottom * size.x,
-          right + bottom * size.x,
-        };
-        grid[slots[0]].push_back(candidate);
-        if (slots[0] != slots[1]) grid[slots[1]].push_back(candidate);
-        if (slots[1] != slots[2]) grid[slots[2]].push_back(candidate);
-        if (slots[2] != slots[3]) grid[slots[3]].push_back(candidate);
+      left = static_cast<int>(body.position.x - collideable.radius) / PARTITIONS,
+      top = static_cast<int>(body.position.y - collideable.radius) / PARTITIONS,
+      right = static_cast<int>(body.position.x + collideable.radius) / PARTITIONS,
+      bottom = static_cast<int>(body.position.y + collideable.radius) / PARTITIONS;
+      Candidate candidate {body.position, collideable.radius, entity};
+      unsigned int slots[4] = {
+        left + top * size.x,
+        right + top * size.x,
+        left  + bottom * size.x,
+        right + bottom * size.x,
+      };
+      grid[slots[0]].push_back(candidate);
+      if (slots[0] != slots[1]) grid[slots[1]].push_back(candidate);
+      if (slots[1] != slots[2]) grid[slots[2]].push_back(candidate);
+      if (slots[2] != slots[3]) grid[slots[3]].push_back(candidate);
     });
   }
 
@@ -321,7 +321,7 @@ private:
 class Game : public ex::EntityX {
 public:
   explicit Game(sf::RenderTarget &target, sf::Font &font) {
-    systems.add<SpawnSystem>(target, 100);
+    systems.add<SpawnSystem>(target, (target.getSize().x * target.getSize().y) / 8000);
     systems.add<BodySystem>();
     systems.add<BounceSystem>(target);
     systems.add<CollisionSystem>(target);
@@ -335,16 +335,16 @@ public:
   void update(ex::TimeDelta dt) {
     systems.update<BodySystem>(dt);
     systems.update<BounceSystem>(dt);
-    static sf::Clock updateClock;
-    auto microseconds = updateClock.getElapsedTime().asMicroseconds();
+    //static sf::Clock updateClock;
+    //auto microseconds = updateClock.getElapsedTime().asMicroseconds();
     // Only update every 5ms
-    if( microseconds > 5000 ) {
-      updateClock.restart();
-      systems.update<SpawnSystem>(dt);
-      systems.update<CollisionSystem>(dt);
-      systems.update<ExplosionSystem>(dt);
-      systems.update<ParticleSystem>(dt);
-    }
+    //if( microseconds > 5000 ) {
+    //updateClock.restart();
+    systems.update<SpawnSystem>(dt);
+    systems.update<CollisionSystem>(dt);
+    systems.update<ExplosionSystem>(dt);
+    systems.update<ParticleSystem>(dt);
+    //}
     systems.update<RenderSystem>(dt);
     systems.update<ParticleRenderSystem>(dt);
   }
@@ -355,75 +355,86 @@ public:
 int main() {
   std::srand(std::time(nullptr));
 
-  sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "EntityX Example", sf::Style::Fullscreen);
+  
+  std::vector<sf::VideoMode> modes = sf::VideoMode::getFullscreenModes();
+#if 1
+  for (std::size_t i = 0; i < modes.size(); ++i)
+  {
+    sf::VideoMode mode = modes[i];    
+    std::cout << "Mode #" << i << ": "
+    << mode.width << "x" << mode.height << " - "
+    << mode.bitsPerPixel << " bpp" << std::endl;
+  }
+#endif
+
+// Windowed
+#if 1
+  auto mode = modes[41]; 
+  auto style = sf::Style::Default; //sf::Style::Fullscreen;
+#else
+//Fullscreen
+  auto mode = modes[36]; 
+  auto style = sf::Style::Fullscreen;  
+#endif
+  cout << "Width: " << mode.width << " Height: " << mode.height << " Bpp: " << mode.bitsPerPixel << endl;
+
+  //auto style = (sf::Style::Titlebar | sf::Style::Close);
+  auto contextSettings = sf::ContextSettings( 16, 0, 0, 2, 1 );
+  sf::RenderWindow window(mode, "EntityX Example", style, contextSettings);
   //sf::RenderWindow window( sf::VideoMode( 800, 600, 32 ), "SFGUI test", sf::Style::Default, sf::ContextSettings( 16, 0, 0, 2, 1 ));
   
   sfg::SFGUI sfgui;
   sfg::Desktop sfguiDesktop;
-  
-  std::vector<sf::VideoMode> modes = sf::VideoMode::getFullscreenModes();
-#if 0
-    for (std::size_t i = 0; i < modes.size(); ++i)
-    {
-      sf::VideoMode mode = modes[i];    
-      std::cout << "Mode #" << i << ": "
-      << mode.width << "x" << mode.height << " - "
-      << mode.bitsPerPixel << " bpp" << std::endl;
-    }
-#endif
 
-    //uint8 defaultStyle = (sf::Style::Titlebar | sf::Style::Close);
-    auto mode = modes[17];
-
-    cout << "Width: " << mode.width << " Height: " << mode.height << " " << endl;
-        
-
-    window.setVerticalSyncEnabled(true);
-    window.setFramerateLimit(60);
+  window.setVerticalSyncEnabled(true);
+  window.setFramerateLimit(60);
     // We have to do this because we don't use SFML to draw.
-    window.resetGLStates();
-    window.setActive(true);
+  window.resetGLStates();
+  window.setActive(true);
 
     //window->setPosition(sf::Vector2i(1100, 100)); 
     //GameState->Font.loadFromFile("../data/fonts/Retro Computer_DEMO.ttf");
 #if 0
-    sf::Font font;
-    if (!font.loadFromFile("../data/font/LiberationSans-Regular.ttf")) {
-      cerr << "error: failed to load LiberationSans-Regular.ttf" << endl;
-      return 1;
-    }
+  sf::Font font;
+  if (!font.loadFromFile("../data/font/LiberationSans-Regular.ttf")) {
+    cerr << "error: failed to load LiberationSans-Regular.ttf" << endl;
+    return 1;
+  }
 #else
-    sf::Font font;
-    if (!font.loadFromFile("../data/fonts/Retro Computer_DEMO.ttf")) {
-      cerr << "error: failed to load Retro Computer_DEMO.ttf" << endl;
-      return 1;
-    }
+  sf::Font font;
+  if (font.loadFromFile("../data/fonts/Retro Computer_DEMO.ttf")) {
+  } else if (font.loadFromFile("../data/font/LiberationSans-Regular.ttf")) {
+  } else {
+    cerr << "error: failed to load Fonts" << endl;
+    cerr << "Exiting" << endl;
+    return 1;
+  }
 #endif
 
-    sfguiDesktop.GetEngine().GetResourceManager().AddFont( "custom_font", std::make_shared<sf::Font>(font));    
+  sfguiDesktop.GetEngine().GetResourceManager().AddFont( "custom_font", std::make_shared<sf::Font>(font));    
     //desktop.SetProperty( "*", "FontName",  "custom_font" );
-    sfguiDesktop.SetProperties(
-      "* {"
-      "   FontName: custom_font;"
-      "   FontSize: 18;"
-      "}"
-      "Window {"
-      "   BackgroundColor: #5c5c5c55;"
-      "   BorderColor: #5c5c5cff;"
-      "   TitleBackgroundColor: #5c5c5cff;"
-      "}"
-      "Button {"
-      "   BackgroundColor: #444444ff;"
-      "   FontSize: 14;"
-      "}"
-      "Window#inventory > * > * > Button {"
-      "   BackgroundColor: #202020fa;"
-      "}"
-      );
+  sfguiDesktop.SetProperties(
+    "* {"
+    "   FontName: custom_font;"
+    "   FontSize: 18;"
+    "}"
+    "Window {"
+    "   BackgroundColor: #5c5c5c55;"
+    "   BorderColor: #5c5c5cff;"
+    "   TitleBackgroundColor: #5c5c5cff;"
+    "}"
+    "Button {"
+    "   BackgroundColor: #444444ff;"
+    "   FontSize: 14;"
+    "}"
+    "Window#inventory > * > * > Button {"
+    "   BackgroundColor: #202020fa;"
+    "}"
+    );
 
   cout << "Version " << terrific_VERSION_MINOR << "." << terrific_VERSION_MAJOR << endl;
 
-  b2World B2World(b2Vec2(0.0f, -9.8f));
+    //b2World B2World(b2Vec2(0.0f, -9.8f));
 
   Game game(window, font);
 
@@ -479,18 +490,18 @@ int main() {
       switch (event.type) {
         case sf::Event::Closed:
         case sf::Event::KeyPressed:
-          window.close();
-          break;
+        window.close();
+        break;
 
         default:
-          sfguiDesktop.HandleEvent(event);
-          break;
+        sfguiDesktop.HandleEvent(event);
+        break;
       }
     }
 
 
     window.clear();
-    
+
     static sf::Clock updateClock;
     auto microseconds = updateClock.getElapsedTime().asMicroseconds();
     // Only update every 5ms
@@ -501,10 +512,10 @@ int main() {
       updateClock.restart();
     }
     sf::Time elapsed = clock.restart();
-    
-    B2World.Step(elapsed.asSeconds(), 6, 2);
+
+      //B2World.Step(elapsed.asSeconds(), 6, 2);
     game.update(elapsed.asSeconds());
-    
+
     // This is important.
     window.setActive( true );
 

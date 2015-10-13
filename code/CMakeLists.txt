@@ -9,7 +9,7 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Ofast -std=c++11 -Wunknown-pragma
 
 # Enable debug symbols by default
 if(CMAKE_BUILD_TYPE STREQUAL "")
-  set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_BUILD_TYPE Debug)
 endif()
 # (you can also set it on the command line: -D CMAKE_BUILD_TYPE=Release)
 
@@ -17,16 +17,16 @@ endif()
 set(terrific_VERSION_MAJOR 1)
 set(terrific_VERSION_MINOR 0)
 configure_file(
-  "${PROJECT_SOURCE_DIR}/config.h.in"
-  "${PROJECT_BINARY_DIR}/config.h"
-  )
+"${PROJECT_SOURCE_DIR}/config.h.in"
+"${PROJECT_BINARY_DIR}/config.h"
+)
 include_directories("${PROJECT_BINARY_DIR}")
 
 file(WRITE "../build/lock.tmp" "lock")
 # Define sources and executable
 set(EXECUTABLE_NAME "terrific")
 #set(TERRIFIC_GAME "terrific_game")
-add_executable(${EXECUTABLE_NAME} linux_terror.cpp)
+add_executable(${EXECUTABLE_NAME} linux_terrific.cpp)
 #add_library(${TERRIFIC_GAME} SHARED terrific_game.cpp)
 
 # Detect and add SFML
@@ -35,9 +35,9 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
 #See the FindSFML.cmake file for additional details and instructions
 find_package(SFML 2 REQUIRED system window graphics network audio)
 if(SFML_FOUND)
-  include_directories(${SFML_INCLUDE_DIR})
-  target_link_libraries(${EXECUTABLE_NAME} ${SFML_LIBRARIES})
-  #target_link_libraries(${TERRIFIC_GAME} ${SFML_LIBRARIES})
+include_directories(${SFML_INCLUDE_DIR})
+target_link_libraries(${EXECUTABLE_NAME} ${SFML_LIBRARIES})
+#target_link_libraries(${TERRIFIC_GAME} ${SFML_LIBRARIES})
 endif()
 
 
@@ -60,25 +60,25 @@ target_link_libraries( ${EXECUTABLE_NAME} ${SFGUI_LIBRARY} ${SFGUI_DEPENDENCIES}
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
 find_package(EntityX REQUIRED)
 if(ENTITYX_FOUND)
-  include_directories(${ENTITYX_INCLUDE_DIR})
-  target_link_libraries(${EXECUTABLE_NAME} ${ENTITYX_LIBRARY})
-  #target_link_libraries(${TERRIFIC_GAME} ${ENTITYX_LIBRARY})
+include_directories(${ENTITYX_INCLUDE_DIR})
+target_link_libraries(${EXECUTABLE_NAME} ${ENTITYX_LIBRARY})
+#target_link_libraries(${TERRIFIC_GAME} ${ENTITYX_LIBRARY})
 endif()
 
 # Detect and add LibDL
 #set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
 find_package(LibDL REQUIRED)
 if(LIBDL_FOUND)
-  include_directories(${LIBDL_INCLUDE_DIR})
-  target_link_libraries(${EXECUTABLE_NAME} ${LIBDL_LIBRARIES})
+include_directories(${LIBDL_INCLUDE_DIR})
+target_link_libraries(${EXECUTABLE_NAME} ${LIBDL_LIBRARIES})
 endif()
 
 # Detect and add Box2D
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
 find_package(Box2D REQUIRED)
 if(BOX2D_FOUND)
-  #include_directories(${BOX2D_INCLUDE_DIR})
-  target_link_libraries(${EXECUTABLE_NAME} ${BOX2D_LIBRARY})
+#include_directories(${BOX2D_INCLUDE_DIR})
+target_link_libraries(${EXECUTABLE_NAME} ${BOX2D_LIBRARY})
 endif()
 
 # Detect and add OpenGL

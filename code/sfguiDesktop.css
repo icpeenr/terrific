@@ -1,0 +1,16 @@
+* {
+ FontName: custom_font;
+ FontSize: 18;
+}
+Window {
+ BackgroundColor: #5c5c5c55;
+ BorderColor: #5c5c5cff;
+ TitleBackgroundColor: #5c5c5cff;
+}
+Button {
+ BackgroundColor: #444444ff;
+ FontSize: 14;
+}
+Window#inventory > * > * > Button {
+ BackgroundColor: #202020fa;
+}

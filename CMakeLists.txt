@@ -27,7 +27,7 @@ file(WRITE "build/lock.tmp" "lock")
 # Define sources and executable
 set(EXECUTABLE_NAME "terrific")
 #set(TERRIFIC_GAME "terrific_game")
-add_executable(${EXECUTABLE_NAME} ${PROJECT_SOURCE_DIR}/linux_terrific.cpp)
+add_executable(${EXECUTABLE_NAME} ${PROJECT_SOURCE_DIR}/linux_terrific2.cpp)
 #add_library(${TERRIFIC_GAME} SHARED terrific_game.cpp)
 
 # Detect and add SFML

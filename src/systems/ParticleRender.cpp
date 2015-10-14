@@ -1,3 +1,5 @@
+#include "../components/Body.h"
+#include "../components/Particle.h"
 
 namespace tsm
 {

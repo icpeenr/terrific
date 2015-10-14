@@ -1,5 +1,6 @@
-#pragma once
-
+#include "../components/Body.h"
+#include "../components/Collideable.h"
+#include "../components/Renderable.h"
 
 namespace tsm
 {

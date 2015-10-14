@@ -1,3 +1,9 @@
+#include "../components/Body.h"
+#include "../components/Renderable.h"
+#include "../components/Collideable.h"
+#include "../components/Particle.h"
+
+#include "../events/Collision.h"
 
 namespace tsm
 {

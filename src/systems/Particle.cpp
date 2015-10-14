@@ -1,4 +1,4 @@
-#pragma once
+#include "../components/Particle.h"
 
 namespace tsm
 {

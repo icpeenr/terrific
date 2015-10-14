@@ -1,4 +1,7 @@
-#pragma once
+#include "../components/Body.h"
+#include "../components/Collideable.h"
+
+#include "../events/Collision.h"
 
 namespace tsm
 {

@@ -1,4 +1,4 @@
-#pragma once
+#include "../components/Body.h"
 
 namespace tsm
 {

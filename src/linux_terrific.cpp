@@ -2,10 +2,8 @@
 #include "config.h"
 #include "linux_terrific.h"
 
-float r(int a, float b = 0) {
-  return static_cast<float>(std::rand() % (a * 1000) + b * 1000) / 1000.0;
-}
 
+/*
 #include "components/Body.h"
 
 #include "components/Renderable.h"
@@ -15,22 +13,15 @@ float r(int a, float b = 0) {
 #include "components/Collideable.h"
 
 #include "events/Collision.h"
-
+*/
 #include "systems/Spawn.cpp"
-
 #include "systems/Body.cpp"
-
 #include "systems/Bounce.cpp"
-
 #include "systems/Collision.cpp"
-
-#include "systems/Particle.cpp"
-
-#include "systems/ParticleRender.cpp"
-
 #include "systems/Explosion.cpp"
-
+#include "systems/Particle.cpp"
 #include "systems/Render.cpp"
+#include "systems/ParticleRender.cpp"
 
 class Game : public ex::EntityX {
 public:
@@ -171,7 +162,7 @@ int main() {
 // Windowed
 #if 1
   auto mode = modes[41]; 
-  auto style = sf::Style::Default; //sf::Style::Fullscreen;
+  auto style = (sf::Style::Default | sf::Style::Titlebar); //sf::Style::Fullscreen;
 #else
 //Fullscreen
   auto mode = modes[36]; 

@@ -22,13 +22,21 @@ configure_file(
 "${PROJECT_BINARY_DIR}/config.h"
 )
 include_directories("${PROJECT_BINARY_DIR}")
+include_directories("${PROJECT_SOURCE_DIR}/Engine")
+include_directories("${PROJECT_SOURCE_DIR}/Framework")
 
 file(WRITE "build/lock.tmp" "lock")
 # Define sources and executable
 set(EXECUTABLE_NAME "terrific")
 #set(TERRIFIC_GAME "terrific_game")
-add_executable(${EXECUTABLE_NAME} ${PROJECT_SOURCE_DIR}/linux_terrific2.cpp)
+
+add_executable(${EXECUTABLE_NAME} ${PROJECT_SOURCE_DIR}/Main.cpp)
 #add_library(${TERRIFIC_GAME} SHARED terrific_game.cpp)
+file(GLOB LibSrc ${PROJECT_SOURCE_DIR}/Engine/*.cpp)
+#add_library(Engine SHARED ${PROJECT_SOURCE_DIR}/Engine/*.cpp)
+
+add_library(Engine SHARED ${LibSrc})
+target_link_libraries(${EXECUTABLE_NAME} Engine)
 
 # Detect and add SFML
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
@@ -87,6 +95,15 @@ find_package(OpenGL REQUIRED)
 if(OPENGL_FOUND)
 target_link_libraries(${EXECUTABLE_NAME} ${OPENGL_LIBRARY})
 endif()
+
+# Detect and add GLU
+find_package(GLU REQUIRED)
+if(GLU_FOUND)
+include_directories(${GLU_INCLUDE_DIR})
+target_link_libraries(${EXECUTABLE_NAME} ${GLU_LIBRARY})
+endif()
+
+
 
 # Install target
 #install(TARGETS ${EXECUTABLE_NAME} DESTINATION bin)

@@ -72,10 +72,4 @@ namespace ex = entityx;
 
 typedef std::string String;
 
-/*
-typedef std::cerr cerr;
-typedef std::cout cout;
-typedef std::endl endl;
-*/
-
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))

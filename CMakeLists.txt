@@ -93,15 +93,16 @@ endif()
 # Detect and add OpenGL
 find_package(OpenGL REQUIRED)
 if(OPENGL_FOUND)
+include_directories(${OPENGL_INCLUDE_DIR})
 target_link_libraries(${EXECUTABLE_NAME} ${OPENGL_LIBRARY})
 endif()
 
 # Detect and add GLU
-find_package(GLU REQUIRED)
-if(GLU_FOUND)
-include_directories(${GLU_INCLUDE_DIR})
-target_link_libraries(${EXECUTABLE_NAME} ${GLU_LIBRARY})
-endif()
+#find_package(GLU REQUIRED)
+#if(GLU_FOUND)
+#include_directories(${GLU_INCLUDE_DIR})
+#target_link_libraries(${EXECUTABLE_NAME} ${GLU_LIBRARY})
+#endif()
 
 
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Common.h"
+#include "ContentManager.h"
 
 class Game
 {
@@ -23,8 +24,9 @@ protected:
 public:
 	const float 			GetElapsedTime() const;
 	const bool				IsExiting() const;
-	/*
+	
 	ContentManager*			GetContentManager() const;
+	/*
 	ActorManager*			GetActorManager() const;
 	CameraManager*			GetCameraManager() const;
 	GraphicsDeviceManager*	GetGraphicsDeviceManager() const;
@@ -37,11 +39,9 @@ private:
 	sfg::SFGUI				m_Sfgui;
 	sfg::Desktop			m_SfguiDesktop;
 	sf::Clock				m_Clock;
-	
-
-
-	/*
+private:
 	ContentManager*			m_pContentManager;
+	/*
 	ActorManager*			m_pActorManager;
 	CameraManager*			m_pCameraManager;
 	GraphicsDeviceManager*	m_pGraphicsDeviceManager;

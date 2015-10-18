@@ -1,17 +1,37 @@
 #include "Game.h"
 #include "Common.h"
 
+#include "config.h"
+
 #include "KeyboardManager.h"
 
+struct GameState
+{
+	GameState() : m_Window(sf::VideoMode(600, 400), "Terrific Engine", sf::Style::Default, sf::ContextSettings( 16, 0, 0, 2, 1 ))
+	{	
+		m_Window.setVerticalSyncEnabled(true);
+		m_Window.setFramerateLimit(60);
+	    // We have to do this because we don't use SFML to draw.
+		m_Window.resetGLStates();
+		m_Window.setActive(true);
+
+	};
+
+	sf::RenderWindow m_Window;
+	sfg::SFGUI m_Sfgui;
+	sfg::Desktop m_SfguiDesktop;
+};
+
 Game::Game() : 	m_Entities(m_Events), m_Systems(m_Entities, m_Events),
-m_Window( sf::VideoMode( 800, 600, 32 ), "Title", sf::Style::Default, sf::ContextSettings( 16, 0, 0, 2, 1 ) ),
+m_Window(sf::VideoMode(600, 400), "Terrific Engine", sf::Style::Default, sf::ContextSettings( 16, 0, 0, 2, 1 )),
 m_SfguiDesktop(),
 m_Clock()
 {
 	m_fElapsedTime = 0.0f;
 	m_bIsExiting = false;
-	/*
+	
 	m_pContentManager = ContentManager::GetInstance();
+	/*
 	m_pActorManager = ActorManager::GetInstance();
 	m_pCameraManager = CameraManager::GetInstance();
 	m_pGraphicsDeviceManager = GraphicsDeviceManager::GetInstance();*/
@@ -19,34 +39,53 @@ m_Clock()
 
 Game::~Game()
 {
-	/*
 	delete m_pContentManager;
+	/*
 	delete m_pActorManager;
 	delete m_pCameraManager;*/
 }
 
 void Game::Initialize()
 {
-	std::cout << "Game::Initialize" << std::endl;
-	
-	m_Window.setVerticalSyncEnabled(true);
-	m_Window.setFramerateLimit(60);
-    // We have to do this because we don't use SFML to draw.
-	m_Window.resetGLStates();
-	m_Window.setActive(true);
+	std::vector<sf::VideoMode> modes = sf::VideoMode::getFullscreenModes();
+#if 0
+  for (std::size_t i = 0; i < modes.size(); ++i)
+  {
+    sf::VideoMode mode = modes[i];    
+    std::cout << "Mode #" << i << ": "
+    << mode.width << "x" << mode.height << " - "
+    << mode.bitsPerPixel << " bpp" << std::endl;
+  }
+#endif
+
+// Windowed
+#if 0
+  auto mode = modes[41]; 
+  auto style = (sf::Style::Default | sf::Style::Titlebar); //sf::Style::Fullscreen;
+#else
+//Fullscreen
+  auto mode = modes[36]; 
+  //auto style = sf::Style::Fullscreen;  
+#endif
+  cout << "Width: " << mode.width << " Height: " << mode.height << " Bpp: " << mode.bitsPerPixel << endl;
+
+  //auto style = (sf::Style::Titlebar | sf::Style::Close);
+  //auto contextSettings = sf::ContextSettings( 16, 0, 0, 2, 1 );
+  //m_Window = sf::RenderWindow(mode, "Terrific Engine", style, contextSettings);
+  //m_Window(sf::VideoMode(600, 400), "Terrific Engine", sf::Style::Default, sf::ContextSettings( 16, 0, 0, 2, 1 ));
 
 	//prepare OpenGL surface for HSR
-	glClearDepth(1.f);
-	glClearColor(0.3f, 0.3f, 0.3f, 0.f);
-	glEnable(GL_DEPTH_TEST);
-	glDepthMask(GL_TRUE);
+  glClearDepth(1.f);
+  glClearColor(0.3f, 0.3f, 0.3f, 0.f);
+  glEnable(GL_DEPTH_TEST);
+  glDepthMask(GL_TRUE);
 
     //// Setup a perspective projection & Camera position
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
     gluPerspective(90.f, 1.f, 1.f, 300.0f);//fov, aspect, zNear, zFar
 
-//cout << "Version " << terrific_VERSION_MINOR << "." << terrific_VERSION_MAJOR << endl;
+    cout << "Version " << terrific_VERSION_MINOR << "." << terrific_VERSION_MAJOR << endl;
 
     //b2World B2World(b2Vec2(0.0f, -9.8f));
   // Create our main SFGUI window
@@ -97,33 +136,21 @@ void Game::Initialize()
 	m_pGraphicsDeviceManager->Initialize();
 	m_pCameraManager->Initialize();*/
 }
-//TODO: ContentManager
-
-std::string get_file_contents(const char *filename)
-{
-	std::ifstream in(filename, std::ios::in | std::ios::binary);
-	if (in)
-	{
-		std::ostringstream contents;
-		contents << in.rdbuf();
-		in.close();
-		return(contents.str());
-	}
-	throw(errno);
-}
 
 void Game::LoadContent()
 {
-	//m_pContentManager->LoadContent();
+	m_pContentManager->LoadContent();
 
-	if (m_Font.loadFromFile("data/fonts/Retro Computer_DEMO.ttf")) {
-	} else if (m_Font.loadFromFile("data/fonts/LiberationSans-Regular.ttf")) {
+	//TODO: Maybe load in ContentManager
+	//      m_Font(m_pContentManager->LoadFont("Retro Computer_DEMO.ttf"))
+	if (m_Font.loadFromFile( m_pContentManager->GetRootDirectory() + "/fonts/Retro Computer_DEMO.ttf")) {
+	} else if (m_Font.loadFromFile( m_pContentManager->GetRootDirectory() +"/fonts/LiberationSans-Regular.ttf")) {
 	} else {
 		cerr << "error: failed to load Fonts" << endl;
 	}
-	m_SfguiDesktop.GetEngine().GetResourceManager().AddFont( "custom_font", std::make_shared<sf::Font>(m_Font));    
+	m_SfguiDesktop.GetEngine().GetResourceManager().AddFont( "custom_font", std::make_shared<sf::Font>(m_Font));
 
-	m_SfguiDesktop.SetProperties(get_file_contents("data/styles/sfguiDesktop.css"));
+	m_SfguiDesktop.SetProperties(m_pContentManager->GetFileContents("data/styles/sfguiDesktop.css"));
 
 	m_SfguiDesktop.Update( 0.f );
 }
@@ -131,7 +158,7 @@ void Game::LoadContent()
 void Game::Update(float elapsedTime)
 {
 	
-	m_fElapsedTime = m_Clock.restart().asSeconds();//(float)glfwGetTime();
+	m_fElapsedTime = m_Clock.restart().asMicroseconds();//.asSeconds();//(float)glfwGetTime();
 
 	KeyboardManager* keyboardManager = KeyboardManager::GetInstance();
 	//MouseManager* mouseManager = MouseManager::GetInstance();
@@ -148,11 +175,14 @@ void Game::Update(float elapsedTime)
 		switch (event.type) {
 			case sf::Event::Closed:
 			m_Window.close();
-			case sf::Event::KeyPressed:
-			break;
 			case sf::Event::Resized:
 			glViewport(0, 0, event.size.width, event.size.height); 
 			break;
+			/*
+			case sf::Event::KeyPressed:
+			keyboardManager->ProcessEvent(event);
+			break;
+			*/
 			default:
 			m_SfguiDesktop.HandleEvent(event);
 			break;
@@ -179,11 +209,14 @@ void Game::Draw()
 	glLoadIdentity();
 	glTranslatef(0.f, 0.f, -200.f);
 	
-	auto rotate = true;
-	real32 angle = 0.0f;
-	if(rotate){
-		angle=GetElapsedTime() / 100.0f;
-	}
+	local_persist real32 angle = 0.0f;
+	auto keyboardManager = KeyboardManager::GetInstance();
+	auto rotate = keyboardManager->IsKeyHeld(sf::Keyboard::Space);
+	
+	
+	if(rotate)
+		angle=GetElapsedTime() / 1000.0f;
+	
 	glRotatef(angle * 50, 1.f, 0.f, 0.f);
 	glRotatef(angle * 30, 0.f, 1.f, 0.f);
 	glRotatef(angle * 90, 0.f, 0.f, 1.f);
@@ -257,18 +290,18 @@ void Game::Draw()
     {
     	return m_bIsExiting;
     }
-/*
-ContentManager* Game::GetContentManager() const
-{
-	return m_pContentManager;
-}
 
+    ContentManager* Game::GetContentManager() const
+    {
+    	return m_pContentManager;
+    }
+/*
 ActorManager* Game::GetActorManager() const
 {
-	return m_pActorManager;
+return m_pActorManager;
 }
 
 CameraManager* Game::GetCameraManager() const
 {
-	return m_pCameraManager;
+return m_pCameraManager;
 }*/

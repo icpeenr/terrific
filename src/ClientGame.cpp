@@ -37,29 +37,14 @@ void ClientGame::Initialize()
 void ClientGame::Update(float elapsedTime)
 {
 	
-	if(KeyboardManager::GetInstance()->IsKeyPressed(sf::Keyboard::Key::Space))
+	
+	if(KeyboardManager::GetInstance()->IsKeyPressed(sf::Keyboard::Key::Escape))
 	{
 		Exit();
 	}
+	
 
-	/*
-	if(MouseManager::GetInstance()->IsButtonDown(MOUSEBUTTON_LEFT))
-	{
-		Camera* pCamera = GetCameraManager()->GetCurrentCamera();
-		Vector3f vBegin = pCamera->GetPosition();
-		Vector3f vForward;
-		Vector3f vEnd;
 
-		Matrix matrix;
-		MatrixHelper::LoadIdentity(matrix);
-		MatrixHelper::SetRotation(matrix, pCamera->GetAbsoluteRotation());
-		MatrixHelper::GetForward(matrix, vForward);
-
-		vEnd = vBegin + (vForward * 64.0f);
-
-		m_vTraceLocation = m_pBsp->TraceRay(vBegin, vEnd);
-	}
-	*/
 	Game::Update(elapsedTime);
 }
 
